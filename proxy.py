@@ -7,7 +7,7 @@ app = Flask(__name__)
 def calendar():
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+            browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
             context = browser.new_context(
                 user_agent=(
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -19,12 +19,15 @@ def calendar():
                 locale="en-US"
             )
             page = context.new_page()
+
+            # Stealth tricks to bypass bot detection
             page.add_init_script("""
-                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+                Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
                 window.chrome = { runtime: {} };
-                Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
-                Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
+                Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
+                Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
             """)
+
             print("🌐 Visiting ForexFactory...")
             page.goto("https://www.forexfactory.com/calendar", timeout=60000)
             page.wait_for_selector("table.calendar__table", timeout=30000)
@@ -33,8 +36,8 @@ def calendar():
             browser.close()
             return Response(html, mimetype='text/html')
     except Exception as e:
-        return f"❌ Proxy error: {str(e)}", 500
+        return Response(f"❌ Proxy error: {str(e)}", status=500)
 
 if __name__ == "__main__":
-    print("🔌 Human-like proxy running at http://0.0.0.0:8081/calendar")
+    print("🔌 Proxy running on http://0.0.0.0:8081/calendar")
     app.run(host="0.0.0.0", port=8081)
