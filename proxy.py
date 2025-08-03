@@ -19,15 +19,12 @@ def calendar():
                 locale="en-US"
             )
             page = context.new_page()
-
-            # Stealth-like script
             page.add_init_script("""
                 Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
                 window.chrome = { runtime: {} };
                 Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
                 Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
             """)
-
             print("🌐 Visiting ForexFactory...")
             page.goto("https://www.forexfactory.com/calendar", timeout=60000)
             page.wait_for_selector("table.calendar__table", timeout=30000)
