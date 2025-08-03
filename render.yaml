@@ -1,8 +1,11 @@
 services:
   - type: web
-    name: forexfactory-proxy
+    name: forexfactory-proxy-2
     env: python
+    plan: free
     buildCommand: |
       pip install -r requirements.txt
-      playwright install
+      playwright install chromium
     startCommand: python proxy.py
+    runtime: python
+    region: oregon
