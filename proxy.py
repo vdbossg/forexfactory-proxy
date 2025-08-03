@@ -20,7 +20,7 @@ def calendar():
             )
             page = context.new_page()
 
-            # Inject stealth-like JS to mask automation
+            # Stealth-like script
             page.add_init_script("""
                 Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
                 window.chrome = { runtime: {} };
