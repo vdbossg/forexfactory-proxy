@@ -2,5 +2,7 @@ services:
   - type: web
     name: forexfactory-proxy
     env: python
-    buildCommand: pip install -r requirements.txt && playwright install
-    startCommand: gunicorn proxy:app --bind 0.0.0.0:$PORT
+    buildCommand: |
+      pip install -r requirements.txt
+      playwright install
+    startCommand: python proxy.py
